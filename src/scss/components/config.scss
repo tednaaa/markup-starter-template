@@ -1,0 +1,16 @@
+@import 'mixins';
+@import 'fonts';
+@import 'null';
+
+body {
+	font-family: $fontFamily, sans-serif;
+	overflow-x: hidden;
+}
+
+.container {
+	max-width: $containerWidth + 30px;
+	padding: 0 15px;
+	margin: 0 auto;
+}
+
+@import '../ui';

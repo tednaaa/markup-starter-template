@@ -1,0 +1,29 @@
+{
+	"name": "and-bulk",
+	"version": "1.0.0",
+	"description": "telegram: @puzyaaaaaa",
+	"author": "And",
+	"license": "ISC",
+	"devDependencies": {
+		"@babel/core": "^7.12.10",
+		"@babel/preset-env": "^7.12.11",
+		"@rollup/plugin-babel": "^5.2.2",
+		"@rollup/plugin-node-resolve": "^11.0.1",
+		"@rollup/stream": "^2.0.0",
+		"browser-sync": "^2.26.13",
+		"del": "^6.0.0",
+		"gulp": "^4.0.2",
+		"gulp-autoprefixer": "^7.0.1",
+		"gulp-clean-css": "^4.3.0",
+		"gulp-group-css-media-queries": "^1.2.2",
+		"gulp-imagemin": "^7.1.0",
+		"gulp-sass": "^4.1.0",
+		"panini": "^1.7.1",
+		"rollup": "^2.36.1",
+		"rollup-plugin-terser": "^7.0.2",
+		"vinyl-source-stream": "^2.0.0"
+	},
+	"dependencies": {
+		"focus-visible": "^5.2.0"
+	}
+}
