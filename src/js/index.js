@@ -1,9 +1,4 @@
 import 'focus-visible';
-import { Burger } from './core';
+import {} from './core';
 
-document.addEventListener('DOMContentLoaded', () => {
-	new Burger({
-		burgerSelector: '.nav__burger',
-		windowSelector: '.nav__list',
-	});
-});
+document.addEventListener('DOMContentLoaded', () => {});

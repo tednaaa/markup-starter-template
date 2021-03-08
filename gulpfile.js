@@ -1,3 +1,19 @@
+const { src, dest, parallel, series, watch } = require('gulp');
+const rollupStream = require('@rollup/stream');
+const { nodeResolve } = require('@rollup/plugin-node-resolve');
+const { babel } = require('@rollup/plugin-babel');
+const { terser } = require('rollup-plugin-terser');
+const source = require('vinyl-source-stream');
+const browsersync = require('browser-sync').create();
+const panini = require('panini');
+const del = require('del');
+const scss = require('gulp-sass');
+const autoprefixer = require('gulp-autoprefixer');
+const groupMedia = require('gulp-group-css-media-queries');
+const cleanCss = require('gulp-clean-css');
+const imagemin = require('gulp-imagemin');
+const fs = require('fs');
+
 const dev = 'src';
 const prod = 'build';
 
@@ -25,22 +41,6 @@ const path = {
 	clean: './' + prod + '/',
 };
 
-const { src, dest, parallel, series, watch } = require('gulp');
-const rollupStream = require('@rollup/stream');
-const { nodeResolve } = require('@rollup/plugin-node-resolve');
-const { babel } = require('@rollup/plugin-babel');
-const { terser } = require('rollup-plugin-terser');
-const source = require('vinyl-source-stream');
-const browsersync = require('browser-sync').create();
-const panini = require('panini');
-const del = require('del');
-const scss = require('gulp-sass');
-const autoprefixer = require('gulp-autoprefixer');
-const groupMedia = require('gulp-group-css-media-queries');
-const cleanCss = require('gulp-clean-css');
-const imagemin = require('gulp-imagemin');
-const fs = require('fs');
-
 const browserSync = () => {
 	browsersync.init({
 		server: {
@@ -48,8 +48,9 @@ const browserSync = () => {
 		},
 		notify: false,
 		ui: false,
-		online: false,
 		open: false,
+		tunnel: true,
+		online: false,
 	});
 };
 
@@ -167,7 +168,7 @@ const buildImages = () => {
 					},
 				],
 				interlaced: true,
-				optimizationLevel: 3, // 0 to 7
+				optimizationLevel: 3,
 			})
 		)
 		.pipe(dest(path.build.img))

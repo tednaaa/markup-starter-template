@@ -15,11 +15,8 @@ button,
 input,
 textarea {
 	display: block;
-	font-family: inherit;
-	font-weight: inherit;
-	font-size: inherit;
-	line-height: inherit;
 	background-color: transparent;
+	font: inherit;
 }
 
 button {
@@ -45,8 +42,7 @@ h3,
 h4,
 h5,
 h6 {
-	font-weight: inherit;
-	font-size: inherit;
+	font: inherit;
 }
 
 a {
