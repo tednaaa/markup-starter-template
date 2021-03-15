@@ -219,6 +219,10 @@ const copyPublic = () => src(path.publicDir.public).pipe(dest(path.buildDir));
 const clean = () => del(path.buildDir);
 
 exports.cf = connectingFonts;
+exports.default = series(
+	series(clean, parallel(markup, styles, scripts, copyPublic)),
+	parallel(watchFiles, browserSync)
+);
 exports.build = series(
 	clean,
 	markup,
@@ -226,8 +230,4 @@ exports.build = series(
 	buildScripts,
 	buildImages,
 	copyPublic
-);
-exports.default = series(
-	series(clean, parallel(markup, styles, scripts, copyPublic)),
-	parallel(watchFiles, browserSync)
 );
