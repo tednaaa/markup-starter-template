@@ -29,22 +29,24 @@ const path = {
 		html: dev + '/*.html',
 		scss: dev + '/scss/index.scss',
 		js: dev + '/js/index.js',
-		img: dev + '/images/**/*.{png,jpg,gif,ico,svg,webp}',
-		fonts: dev + '/fonts/*.woff2',
 	},
 	watch: {
 		html: dev + '/**/*.html',
 		scss: dev + '/scss/**/*.{scss,css}',
 		js: dev + '/js/**/*.js',
-		img: dev + '/images/**/*.{png,jpg,jpeg,gif,svg,webp}',
 	},
-	clean: './' + prod + '/',
+	publicDir: {
+		public: 'public/**',
+		fonts: 'public/fonts/*.woff2',
+		img: 'public/images/**/*.{png,jpg,jpeg,gif,svg,webp}',
+	},
+	buildDir: prod + '/',
 };
 
 const browserSync = () => {
 	browsersync.init({
 		server: {
-			baseDir: './' + prod + '/',
+			baseDir: path.buildDir,
 		},
 		notify: false,
 		ui: false,
@@ -155,7 +157,7 @@ const buildScripts = () => {
 };
 
 const images = () =>
-	src(path.src.img).pipe(dest(path.build.img)).pipe(browsersync.stream());
+	src(path.publicDir.img).pipe(dest(path.build.img)).pipe(browsersync.stream());
 
 const buildImages = () => {
 	return src(path.src.img)
@@ -174,8 +176,6 @@ const buildImages = () => {
 		.pipe(dest(path.build.img))
 		.pipe(browsersync.stream());
 };
-
-const fonts = () => src(path.src.fonts).pipe(dest(path.build.fonts));
 
 const cb = () => {};
 
@@ -211,10 +211,12 @@ const watchFiles = () => {
 	watch([path.watch.html], markup);
 	watch([path.watch.scss], styles);
 	watch([path.watch.js], scripts);
-	watch([path.watch.img], images);
+	watch([path.publicDir.img], images);
 };
 
-const clean = () => del(path.clean);
+const copyPublic = () => src(path.publicDir.public).pipe(dest(path.buildDir));
+
+const clean = () => del(path.buildDir);
 
 exports.cf = connectingFonts;
 exports.build = series(
@@ -223,9 +225,9 @@ exports.build = series(
 	buildStyles,
 	buildScripts,
 	buildImages,
-	fonts
+	copyPublic
 );
 exports.default = series(
-	series(clean, parallel(markup, styles, scripts, images, fonts)),
+	series(clean, parallel(markup, styles, scripts, copyPublic)),
 	parallel(watchFiles, browserSync)
 );
