@@ -29,6 +29,7 @@ const path = {
 		html: dev + '/*.html',
 		scss: dev + '/scss/index.scss',
 		js: dev + '/js/index.js',
+		img: 'public/images/**/*.{png,jpg,jpeg,gif,svg,webp}',
 	},
 	watch: {
 		html: dev + '/**/*.html',
@@ -38,7 +39,6 @@ const path = {
 	publicDir: {
 		public: 'public/**',
 		fonts: 'public/fonts/*.woff2',
-		img: 'public/images/**/*.{png,jpg,jpeg,gif,svg,webp}',
 	},
 	buildDir: prod + '/',
 };
@@ -157,7 +157,7 @@ const buildScripts = () => {
 };
 
 const images = () =>
-	src(path.publicDir.img).pipe(dest(path.build.img)).pipe(browsersync.stream());
+	src(path.src.img).pipe(dest(path.build.img)).pipe(browsersync.stream());
 
 const buildImages = () => {
 	return src(path.src.img)
@@ -211,7 +211,7 @@ const watchFiles = () => {
 	watch([path.watch.html], markup);
 	watch([path.watch.scss], styles);
 	watch([path.watch.js], scripts);
-	watch([path.publicDir.img], images);
+	watch([path.src.img], images);
 };
 
 const copyPublic = () => src(path.publicDir.public).pipe(dest(path.buildDir));
@@ -220,7 +220,7 @@ const clean = () => del(path.buildDir);
 
 exports.cf = connectingFonts;
 exports.default = series(
-	series(clean, parallel(markup, styles, scripts, copyPublic)),
+	series(clean, parallel(markup, styles, scripts, images, copyPublic)),
 	parallel(watchFiles, browserSync)
 );
 exports.build = series(
