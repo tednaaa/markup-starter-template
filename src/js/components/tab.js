@@ -1,18 +1,4 @@
-export class Burger {
-	constructor({ burgerSelector, windowSelector }) {
-		this.burger = document.querySelector(burgerSelector);
-		this.window = document.querySelector(windowSelector);
-
-		if (this.burger && this.window) {
-			this.burger.addEventListener('click', () => {
-				this.burger.classList.toggle('active');
-				this.window.classList.toggle('active');
-			});
-		}
-	}
-}
-
-export class Tab {
+export default class Tab {
 	constructor({ tabBtns, tabWindows }) {
 		this.tabBtns = document.querySelectorAll(tabBtns);
 		this.tabWindows = document.querySelectorAll(tabWindows);

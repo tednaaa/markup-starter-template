@@ -180,23 +180,25 @@ const fonts = () => src(path.src.fonts).pipe(dest(path.build.fonts));
 const cb = () => {};
 
 const connectingFonts = async () => {
-	const fileContent = fs.readFileSync(dev + '/scss/components/fonts.scss');
+	const fontPath = dev + '/scss/utils/fonts.scss';
+	const fileContent = fs.readFileSync(fontPath);
+
 	if (fileContent == '') {
-		fs.writeFile(dev + '/scss/components/fonts.scss', '', cb);
+		fs.writeFile(fontPath, '', cb);
 		fs.readdir(dev + '/fonts/', (err, items) => {
 			if (items) {
-				let cFontname;
+				let cFontName;
 				for (let i = 0; i < items.length; i++) {
-					let fontname = items[i].split('.');
-					fontname = fontname[0];
-					if (cFontname != fontname) {
+					let fontName = items[i].split('.');
+					fontName = fontName[0];
+					if (cFontName != fontName) {
 						fs.appendFile(
-							`${dev}/scss/components/fonts.scss`,
-							`@include font('${fontname}', '${fontname}', '400', 'normal');\n`,
+							fontPath,
+							`@include font('${fontName}', '${fontName}', '400', 'normal');\n`,
 							cb
 						);
 					}
-					cFontname = fontname;
+					cFontName = fontName;
 				}
 			}
 		});
