@@ -1,4 +1,4 @@
-export default class Tab {
+export class Tab {
 	constructor({ tabBtns, tabWindows }) {
 		this.tabBtns = document.querySelectorAll(tabBtns);
 		this.tabWindows = document.querySelectorAll(tabWindows);
