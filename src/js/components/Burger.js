@@ -1,4 +1,4 @@
-export default class Burger {
+export class Burger {
 	constructor({ burgerSelector, windowSelector }) {
 		this.burger = document.querySelector(burgerSelector);
 		this.window = document.querySelector(windowSelector);
