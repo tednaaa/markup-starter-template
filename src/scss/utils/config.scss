@@ -3,20 +3,20 @@
 @import 'null';
 
 body {
-	font-family: $fontFamily, sans-serif;
-	overflow-x: hidden;
-	display: flex;
-	flex-direction: column;
+  font-family: $fontFamily, sans-serif;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .main {
-	flex-grow: 1;
+  flex-grow: 1;
 }
 
 .container {
-	max-width: $containerWidth + 30px;
-	padding: 0 15px;
-	margin: 0 auto;
+  max-width: $containerWidth + 30px;
+  padding: 0 15px;
+  margin: 0 auto;
 }
 
 @import '../ui';
