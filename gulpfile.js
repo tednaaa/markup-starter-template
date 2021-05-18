@@ -20,6 +20,7 @@ const PUBLIC_FOLDER = 'public';
 
 const path = {
   build: {
+    dir: PRODUCTION_FOLDER + '/',
     html: PRODUCTION_FOLDER + '/',
     css: PRODUCTION_FOLDER + '/css/',
     js: PRODUCTION_FOLDER + '/js/',
@@ -31,23 +32,20 @@ const path = {
     scss: DEVELOPMENT_FOLDER + '/scss/index.scss',
     js: DEVELOPMENT_FOLDER + '/js/index.js',
     img: DEVELOPMENT_FOLDER + '/images/**/*.{png,jpg,jpeg,gif,svg,webp}',
+    fonts: DEVELOPMENT_FOLDER + '/fonts/*.woff2',
   },
   watch: {
     html: DEVELOPMENT_FOLDER + '/**/*.html',
     scss: DEVELOPMENT_FOLDER + '/scss/**/*.{scss,css}',
     js: DEVELOPMENT_FOLDER + '/js/**/*.js',
   },
-  publicDir: {
-    public: PUBLIC_FOLDER + '/**',
-    fonts: PUBLIC_FOLDER + '/fonts/*.woff2',
-  },
-  buildDir: PRODUCTION_FOLDER + '/',
+  publicDir: PUBLIC_FOLDER + '/**',
 };
 
 const browserSync = () => {
   browsersync.init({
     server: {
-      baseDir: path.buildDir,
+      baseDir: path.build.dir,
     },
     notify: false,
     ui: false,
@@ -183,8 +181,9 @@ const buildImages = () => {
 
 const cb = () => {};
 
-const connectingFonts = async () => {
-  const fontPath = DEVELOPMENT_FOLDER + '/scss/utils/fonts.scss';
+const connectFonts = async () => {
+  const pathToFontsStyles = '/scss/utils/fonts.scss';
+  const fontPath = DEVELOPMENT_FOLDER + pathToFontsStyles;
   const fileContent = fs.readFileSync(fontPath);
 
   if (fileContent == '') {
@@ -207,7 +206,7 @@ const connectingFonts = async () => {
       }
     });
   } else {
-    throw Error('Файл fonts.scss должен быть пустым.\n');
+    throw Error(`Файл ${pathToFontsStyles} должен быть пустым.\n`);
   }
 };
 
@@ -218,17 +217,17 @@ const watchFiles = () => {
   watch([path.src.img], images);
 };
 
-const copyPublic = () => src(path.publicDir.public).pipe(dest(path.buildDir));
+const copyPublic = () => src(path.publicDir).pipe(dest(path.build.dir));
 
-const clean = () => del(path.buildDir);
+const removeBuildDir = () => del(path.build.dir);
 
-exports.cf = connectingFonts;
+exports.connectFonts = connectFonts;
 exports.default = series(
-  series(clean, parallel(markup, styles, scripts, images, copyPublic)),
+  series(removeBuildDir, parallel(markup, styles, scripts, images, copyPublic)),
   parallel(watchFiles, browserSync)
 );
 exports.build = series(
-  clean,
+  removeBuildDir,
   markup,
   buildStyles,
   buildScripts,

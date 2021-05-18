@@ -1,13 +1,12 @@
 {
   "name": "starter",
   "version": "1.0.0",
-  "description": "telegram: @puzyaaaaaa",
   "author": "And",
   "license": "ISC",
   "scripts": {
     "start": "gulp",
     "build": "gulp build",
-    "cf": "gulp cf"
+    "cf": "gulp connectFonts"
   },
   "devDependencies": {
     "@babel/core": "^7.12.10",
