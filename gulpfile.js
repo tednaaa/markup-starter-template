@@ -218,12 +218,16 @@ const watchFiles = () => {
 };
 
 const copyPublic = () => src(path.publicDir).pipe(dest(path.build.dir));
+const copyFonts = () => src(path.src.fonts).pipe(dest(path.build.fonts));
 
 const removeBuildDir = () => del(path.build.dir);
 
 exports.connectFonts = connectFonts;
 exports.default = series(
-  series(removeBuildDir, parallel(markup, styles, scripts, images, copyPublic)),
+  series(
+    removeBuildDir,
+    parallel(markup, styles, scripts, images, copyFonts, copyPublic)
+  ),
   parallel(watchFiles, browserSync)
 );
 exports.build = series(
@@ -232,5 +236,6 @@ exports.build = series(
   buildStyles,
   buildScripts,
   buildImages,
+  copyFonts,
   copyPublic
 );
