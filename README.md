@@ -2,11 +2,9 @@
 
 ## In main dir
 
-> Reinstall .git and install packages
+> Install packages
 
 ```
-rm -rf .git
-git init
 npm i
 ```
 
