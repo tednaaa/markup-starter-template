@@ -16,7 +16,6 @@ const fs = require('fs');
 
 const DEVELOPMENT_FOLDER = 'src';
 const PRODUCTION_FOLDER = 'build';
-const PUBLIC_FOLDER = 'public';
 
 const path = {
   build: {
@@ -31,15 +30,14 @@ const path = {
     html: DEVELOPMENT_FOLDER + '/*.html',
     scss: DEVELOPMENT_FOLDER + '/scss/index.scss',
     js: DEVELOPMENT_FOLDER + '/js/index.js',
-    img: DEVELOPMENT_FOLDER + '/images/**/*.{png,jpg,jpeg,gif,svg,webp}',
-    fonts: DEVELOPMENT_FOLDER + '/fonts/*.woff2',
+    images: DEVELOPMENT_FOLDER + '/assets/images/**/*.{png,jpg,jpeg,svg,webp}',
+    assets: DEVELOPMENT_FOLDER + '/assets/**',
   },
   watch: {
     html: DEVELOPMENT_FOLDER + '/**/*.html',
     scss: DEVELOPMENT_FOLDER + '/scss/**/*.{scss,css}',
     js: DEVELOPMENT_FOLDER + '/js/**/*.js',
   },
-  publicDir: PUBLIC_FOLDER + '/**',
 };
 
 const browserSync = () => {
@@ -155,14 +153,8 @@ const buildScripts = () => {
     .pipe(dest(path.build.js));
 };
 
-const images = () => {
-  return src(path.src.img)
-    .pipe(dest(path.build.img))
-    .pipe(browsersync.stream());
-};
-
 const buildImages = () => {
-  return src(path.src.img)
+  return src(path.src.images)
     .pipe(
       imagemin({
         progressive: true,
@@ -175,7 +167,12 @@ const buildImages = () => {
         optimizationLevel: 3,
       })
     )
-    .pipe(dest(path.build.img))
+    .pipe(dest(path.build.img));
+};
+
+const copyAssets = () => {
+  return src(path.src.assets)
+    .pipe(dest(path.build.dir))
     .pipe(browsersync.stream());
 };
 
@@ -214,20 +211,14 @@ const watchFiles = () => {
   watch([path.watch.html], markup);
   watch([path.watch.scss], styles);
   watch([path.watch.js], scripts);
-  watch([path.src.img], images);
+  watch([path.src.assets], copyAssets);
 };
-
-const copyPublic = () => src(path.publicDir).pipe(dest(path.build.dir));
-const copyFonts = () => src(path.src.fonts).pipe(dest(path.build.fonts));
 
 const removeBuildDir = () => del(path.build.dir);
 
 exports.connectFonts = connectFonts;
 exports.default = series(
-  series(
-    removeBuildDir,
-    parallel(markup, styles, scripts, images, copyFonts, copyPublic)
-  ),
+  series(removeBuildDir, parallel(markup, styles, scripts, copyAssets)),
   parallel(watchFiles, browserSync)
 );
 exports.build = series(
@@ -235,7 +226,6 @@ exports.build = series(
   markup,
   buildStyles,
   buildScripts,
-  buildImages,
-  copyFonts,
-  copyPublic
+  copyAssets,
+  buildImages
 );
