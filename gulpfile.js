@@ -23,7 +23,7 @@ const path = {
     html: PRODUCTION_FOLDER + '/',
     css: PRODUCTION_FOLDER + '/css/',
     js: PRODUCTION_FOLDER + '/js/',
-    img: PRODUCTION_FOLDER + '/images/',
+    images: PRODUCTION_FOLDER + '/images/',
     fonts: PRODUCTION_FOLDER + '/fonts/',
   },
   src: {
@@ -167,7 +167,7 @@ const buildImages = () => {
         optimizationLevel: 3,
       })
     )
-    .pipe(dest(path.build.img));
+    .pipe(dest(path.build.images));
 };
 
 const copyAssets = () => {
@@ -175,6 +175,8 @@ const copyAssets = () => {
     .pipe(dest(path.build.dir))
     .pipe(browsersync.stream());
 };
+
+const removeBuildDir = () => del(path.build.dir);
 
 const cb = () => {};
 
@@ -213,8 +215,6 @@ const watchFiles = () => {
   watch([path.watch.js], scripts);
   watch([path.src.assets], copyAssets);
 };
-
-const removeBuildDir = () => del(path.build.dir);
 
 exports.connectFonts = connectFonts;
 exports.default = series(
