@@ -4,7 +4,7 @@
   "author": "And",
   "license": "ISC",
   "scripts": {
-    "start": "gulp",
+    "dev": "gulp",
     "build": "gulp build",
     "cf": "gulp connectFonts"
   },

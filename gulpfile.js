@@ -4,7 +4,7 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const { babel } = require('@rollup/plugin-babel');
 const { terser } = require('rollup-plugin-terser');
 const source = require('vinyl-source-stream');
-const browsersync = require('browser-sync').create();
+const browserSync = require('browser-sync').create();
 const panini = require('panini');
 const del = require('del');
 const scss = require('gulp-sass');
@@ -19,31 +19,32 @@ const PRODUCTION_FOLDER = 'build';
 
 const path = {
   build: {
-    dir: PRODUCTION_FOLDER + '/',
-    html: PRODUCTION_FOLDER + '/',
-    css: PRODUCTION_FOLDER + '/css/',
-    js: PRODUCTION_FOLDER + '/js/',
-    images: PRODUCTION_FOLDER + '/images/',
-    fonts: PRODUCTION_FOLDER + '/fonts/',
+    css: `${PRODUCTION_FOLDER}/css`,
+    js: `${PRODUCTION_FOLDER}/js`,
+    images: `${PRODUCTION_FOLDER}/images`,
   },
   src: {
-    html: DEVELOPMENT_FOLDER + '/*.html',
-    scss: DEVELOPMENT_FOLDER + '/scss/index.scss',
-    js: DEVELOPMENT_FOLDER + '/js/index.js',
-    images: DEVELOPMENT_FOLDER + '/assets/images/**/*.{png,jpg,jpeg,svg,webp}',
-    assets: DEVELOPMENT_FOLDER + '/assets/**',
+    html: `${DEVELOPMENT_FOLDER}/*.html`,
+    scss: `${DEVELOPMENT_FOLDER}/scss/index.scss`,
+    js: `${DEVELOPMENT_FOLDER}/js/index.js`,
+    images: `${DEVELOPMENT_FOLDER}/assets/images/**/*.{png,jpg,jpeg,svg,webp}`,
+    assets: `${DEVELOPMENT_FOLDER}/assets/**`,
   },
   watch: {
-    html: DEVELOPMENT_FOLDER + '/**/*.html',
-    scss: DEVELOPMENT_FOLDER + '/scss/**/*.{scss,css}',
-    js: DEVELOPMENT_FOLDER + '/js/**/*.js',
+    html: `${DEVELOPMENT_FOLDER}/**/*.html`,
+    scss: `${DEVELOPMENT_FOLDER}/scss/**/*.{scss,css}`,
+    js: `${DEVELOPMENT_FOLDER}/js/**/*.js`,
+  },
+  fonts: {
+    dir: `${DEVELOPMENT_FOLDER}/assets/fonts`,
+    styles: `${DEVELOPMENT_FOLDER}/scss/utils/fonts.scss`,
   },
 };
 
-const browserSync = () => {
-  browsersync.init({
+const runBrowserSyncServer = () => {
+  browserSync.init({
     server: {
-      baseDir: path.build.dir,
+      baseDir: PRODUCTION_FOLDER,
     },
     notify: false,
     ui: false,
@@ -53,21 +54,22 @@ const browserSync = () => {
   });
 };
 
-const markup = () => {
+const compileMarkup = () => {
   panini.refresh();
+
   return src(path.src.html)
     .pipe(
       panini({
         root: DEVELOPMENT_FOLDER,
-        layouts: DEVELOPMENT_FOLDER + '/html/',
-        partials: DEVELOPMENT_FOLDER + '/html/components/',
+        layouts: `${DEVELOPMENT_FOLDER}/html`,
+        partials: `${DEVELOPMENT_FOLDER}/html/components`,
       })
     )
-    .pipe(dest(path.build.html))
-    .pipe(browsersync.stream());
+    .pipe(dest(PRODUCTION_FOLDER))
+    .pipe(browserSync.stream());
 };
 
-const styles = () => {
+const compileStyles = () => {
   return src(path.src.scss)
     .pipe(
       scss({
@@ -83,7 +85,7 @@ const styles = () => {
       })
     )
     .pipe(dest(path.build.css))
-    .pipe(browsersync.stream());
+    .pipe(browserSync.stream());
 };
 
 const buildStyles = () => {
@@ -105,7 +107,7 @@ const buildStyles = () => {
     .pipe(dest(path.build.css));
 };
 
-const scripts = () => {
+const compileScripts = () => {
   return rollupStream({
     input: path.src.js,
     output: {
@@ -121,12 +123,13 @@ const scripts = () => {
       if (warning.code === 'THIS_IS_UNDEFINED') {
         return;
       }
+
       console.warn(warning.message);
     },
   })
     .pipe(source('index.js'))
     .pipe(dest(path.build.js))
-    .pipe(browsersync.stream());
+    .pipe(browserSync.stream());
 };
 
 const buildScripts = () => {
@@ -146,6 +149,7 @@ const buildScripts = () => {
       if (warning.code === 'THIS_IS_UNDEFINED') {
         return;
       }
+
       console.warn(warning.message);
     },
   })
@@ -172,58 +176,55 @@ const buildImages = () => {
 
 const copyAssets = () => {
   return src(path.src.assets)
-    .pipe(dest(path.build.dir))
-    .pipe(browsersync.stream());
+    .pipe(dest(PRODUCTION_FOLDER))
+    .pipe(browserSync.stream());
 };
 
-const removeBuildDir = () => del(path.build.dir);
-
-const cb = () => {};
+const removeBuildDir = () => del(PRODUCTION_FOLDER);
 
 const connectFonts = async () => {
-  const pathToFontsStyles = '/scss/utils/fonts.scss';
-  const fontPath = DEVELOPMENT_FOLDER + pathToFontsStyles;
-  const fileContent = fs.readFileSync(fontPath);
+  fs.readdir(path.fonts.dir, (error, fonts) => {
+    handleError(error);
 
-  if (fileContent == '') {
-    fs.writeFile(fontPath, '', cb);
-    fs.readdir(DEVELOPMENT_FOLDER + '/fonts/', (err, items) => {
-      if (items) {
-        let cFontName;
-        for (let i = 0; i < items.length; i++) {
-          let fontName = items[i].split('.');
-          fontName = fontName[0];
-          if (cFontName != fontName) {
-            fs.appendFile(
-              fontPath,
-              `@include font('${fontName}', '${fontName}', '400', 'normal');\n`,
-              cb
-            );
-          }
-          cFontName = fontName;
-        }
-      }
+    if (fonts.length === 0) {
+      return console.log('No fonts to connect');
+    }
+
+    fs.truncate(path.fonts.styles, handleError);
+
+    fonts.forEach((font) => {
+      const fontWithoutExtension = font.split('.')[0];
+      const fontFaceMixin = `@include font('${fontWithoutExtension}', '${fontWithoutExtension}', '400', 'normal');\n`;
+
+      fs.appendFile(path.fonts.styles, fontFaceMixin, handleError);
     });
-  } else {
-    throw Error(`Файл ${pathToFontsStyles} должен быть пустым.\n`);
+  });
+};
+
+const handleError = (error) => {
+  if (error) {
+    return console.log(error);
   }
 };
 
 const watchFiles = () => {
-  watch([path.watch.html], markup);
-  watch([path.watch.scss], styles);
-  watch([path.watch.js], scripts);
+  watch([path.watch.html], compileMarkup);
+  watch([path.watch.scss], compileStyles);
+  watch([path.watch.js], compileScripts);
   watch([path.src.assets], copyAssets);
 };
 
 exports.connectFonts = connectFonts;
 exports.default = series(
-  series(removeBuildDir, parallel(markup, styles, scripts, copyAssets)),
-  parallel(watchFiles, browserSync)
+  series(
+    removeBuildDir,
+    parallel(compileMarkup, compileStyles, compileScripts, copyAssets)
+  ),
+  parallel(watchFiles, runBrowserSyncServer)
 );
 exports.build = series(
   removeBuildDir,
-  markup,
+  compileMarkup,
   buildStyles,
   buildScripts,
   copyAssets,
