@@ -1,8 +1,5 @@
 {
-  "name": "starter",
-  "version": "1.0.0",
-  "author": "And",
-  "license": "ISC",
+  "private": true,
   "scripts": {
     "dev": "gulp",
     "build": "gulp build",
