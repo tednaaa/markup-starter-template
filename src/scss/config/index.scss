@@ -1,6 +1,7 @@
-@import 'mixins';
-@import 'fonts';
-@import 'null';
+@import 'variables.scss';
+@import 'mixins.scss';
+@import 'fonts.scss';
+@import 'null.scss';
 
 body {
   font-family: $fontFamily, sans-serif;
@@ -18,5 +19,3 @@ body {
   padding: 0 15px;
   margin: 0 auto;
 }
-
-@import '../blocks';

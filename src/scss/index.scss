@@ -1,3 +1,4 @@
-$fontFamily: '';
-$containerWidth: 1170;
-@import 'utils/config';
+@import 'config/index.scss';
+
+@import 'components/header.scss';
+@import 'components/footer.scss';
