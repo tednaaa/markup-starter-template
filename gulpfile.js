@@ -61,8 +61,8 @@ const compileMarkup = () => {
     .pipe(
       panini({
         root: DEVELOPMENT_FOLDER,
-        layouts: `${DEVELOPMENT_FOLDER}/html`,
-        partials: `${DEVELOPMENT_FOLDER}/html/components`,
+        layouts: `${DEVELOPMENT_FOLDER}/layouts`,
+        partials: `${DEVELOPMENT_FOLDER}/partials`,
       })
     )
     .pipe(dest(PRODUCTION_FOLDER))
