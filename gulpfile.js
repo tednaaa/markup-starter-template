@@ -37,7 +37,7 @@ const path = {
   },
   fonts: {
     dir: `${DEVELOPMENT_FOLDER}/assets/fonts`,
-    styles: `${DEVELOPMENT_FOLDER}/scss/utils/fonts.scss`,
+    styles: `${DEVELOPMENT_FOLDER}/scss/config/fonts.scss`,
   },
 };
 
