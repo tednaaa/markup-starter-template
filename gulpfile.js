@@ -31,7 +31,7 @@ const path = {
     assets: `${DEVELOPMENT_FOLDER}/assets/**`,
   },
   watch: {
-    html: `${DEVELOPMENT_FOLDER}/**/*.html`,
+    markup: `${DEVELOPMENT_FOLDER}/**/*.{html,hbs}`,
     scss: `${DEVELOPMENT_FOLDER}/scss/**/*.{scss,css}`,
     js: `${DEVELOPMENT_FOLDER}/js/**/*.js`,
   },
@@ -208,7 +208,7 @@ const handleError = (error) => {
 };
 
 const watchFiles = () => {
-  watch([path.watch.html], compileMarkup);
+  watch([path.watch.markup], compileMarkup);
   watch([path.watch.scss], compileStyles);
   watch([path.watch.js], compileScripts);
   watch([path.src.assets], copyAssets);
