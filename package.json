@@ -19,6 +19,7 @@
     "gulp-group-css-media-queries": "^1.2.2",
     "gulp-imagemin": "^7.1.0",
     "gulp-sass": "^4.1.0",
+    "gulp-sass-glob": "^1.1.0",
     "panini": "^1.7.1",
     "rollup": "^2.36.1",
     "rollup-plugin-terser": "^7.0.2",

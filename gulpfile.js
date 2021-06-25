@@ -8,6 +8,7 @@ const browserSync = require('browser-sync').create();
 const panini = require('panini');
 const del = require('del');
 const scss = require('gulp-sass');
+const sassGlob = require('gulp-sass-glob');
 const autoprefixer = require('gulp-autoprefixer');
 const groupMedia = require('gulp-group-css-media-queries');
 const cleanCss = require('gulp-clean-css');
@@ -71,6 +72,7 @@ const compileMarkup = () => {
 
 const compileStyles = () => {
   return src(path.src.scss)
+    .pipe(sassGlob())
     .pipe(
       scss({
         outputStyle: 'expanded',
