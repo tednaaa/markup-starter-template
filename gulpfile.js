@@ -92,6 +92,7 @@ const compileStyles = () => {
 
 const buildStyles = () => {
   return src(path.src.scss)
+    .pipe(sassGlob())
     .pipe(
       scss({
         outputStyle: 'expanded',
