@@ -1,6 +1,4 @@
-# Init project
-
-## In main dir
+# Project init
 
 > Install packages
 
