@@ -1,4 +1,4 @@
-name: Markup starter template with gulp
+name: ci
 
 on:
   push:
@@ -25,4 +25,4 @@ jobs:
     - name: Build
       run: |
         npm install
-        npm run dev
+        npm run build
